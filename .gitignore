@@ -2,4 +2,5 @@
 /Final_Prediction
 /output
 /Trained_Models
-/_pycache_
+/__pycache__
+/.ipynb_checkpoints
