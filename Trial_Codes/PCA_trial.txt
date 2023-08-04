@@ -1,0 +1,60 @@
+import mne
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+# Assume your data is stored in an MNE Epochs object named 'all_data'
+eeg_data = all_data.get_data()
+
+# The shape of eeg_data is (n_epochs, n_channels, n_times)
+# We want to reshape it to (n_epochs, n_channels * n_times)
+n_epochs, n_channels, n_times = eeg_data.shape
+eeg_data_reshaped = eeg_data.reshape((n_epochs, n_channels * n_times))
+
+# Standardize the data
+scaler = StandardScaler()
+eeg_data_standardized = scaler.fit_transform(eeg_data_reshaped)
+
+# Get event labels
+events = all_data.events[:, 2]  # the event codes
+# Reverse the dictionary
+event_id = all_data.event_id  # a dictionary mapping event codes to event names
+event_id = {v: k for k, v in event_id.items()}
+# Map event codes to event names
+event_names = [event_id[event] for event in events]
+
+# Maximum number of PCs to test
+max_pcs = 50
+
+# Placeholder for accuracies
+accuracies = []
+
+for i in range(1, max_pcs + 1):
+    # Apply PCA with 'i' components
+    pca = PCA(n_components=i)
+    eeg_data_pca = pca.fit_transform(eeg_data_standardized)
+
+    # Split data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(eeg_data_pca, event_names, test_size=0.2, random_state=42)
+
+    # Train a Random Forest model
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Test the model
+    y_pred = model.predict(X_test)
+
+    # Compute accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    accuracies.append(accuracy)
+
+# Plot the accuracies
+plt.plot(range(1, max_pcs + 1), accuracies)
+plt.xlabel('Number of PCs used')
+plt.ylabel('Validation Accuracy')
+plt.title('Random Forest Accuracy with Varying Number of PCs')
+plt.show()
