@@ -16,6 +16,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import SGDClassifier
+from tabulate import tabulate
+
 
 def train_models_and_save_raw_data(all_data, save_dir, random_seed=42):
     # Get the data and labels
@@ -58,14 +60,28 @@ def train_models_and_save_raw_data(all_data, save_dir, random_seed=42):
             print(f"Failed to write report file for {model_name}")
 
         # Print and write the confusion matrix
+        # Get unique class labels from y_test
+        class_labels = np.unique(y_test)
+
+        # Convert class labels to strings 
+        class_labels = [str(label) for label in class_labels]
+
+        # Print and write the confusion matrix with class labels using tabulate
         cm = confusion_matrix(y_test, y_pred)
-        print(cm)
+        print("Confusion Matrix:")
+        table_data = [[label] + list(cm_row) for label, cm_row in zip(class_labels, cm)]
+        table_header = [""] + [f"Predicted {label}" for label in class_labels]
+        print(tabulate(table_data, headers=table_header, tablefmt="grid"))
+
+        # Write confusion matrix file for model_name
         cm_filename = os.path.join(save_dir, f"{model_name}_confusion_matrix.txt")
         try:
             with open(cm_filename, "w") as f:
-                f.write(str(cm))
+                f.write("Confusion Matrix:\n")
+                f.write(tabulate(table_data, headers=table_header, tablefmt="grid"))
         except:
             print(f"Failed to write confusion matrix file for {model_name}")
+
 
         # Save the model to a file
         model_filename = os.path.join(save_dir, f"{model_name}.pkl")
@@ -115,14 +131,28 @@ def train_models_and_save_feature_extracted_data(X,y, save_dir, random_seed=42):
             print(f"Failed to write report file for {model_name}")
 
         # Print and write the confusion matrix
+        # Get unique class labels from y_test
+        class_labels = np.unique(y_test)
+
+        # Convert class labels to strings 
+        class_labels = [str(label) for label in class_labels]
+
+        # Print and write the confusion matrix with class labels using tabulate
         cm = confusion_matrix(y_test, y_pred)
-        print(cm)
+        print("Confusion Matrix:")
+        table_data = [[label] + list(cm_row) for label, cm_row in zip(class_labels, cm)]
+        table_header = [""] + [f"Predicted {label}" for label in class_labels]
+        print(tabulate(table_data, headers=table_header, tablefmt="grid"))
+
+        # Write confusion matrix file for model_name
         cm_filename = os.path.join(save_dir, f"{model_name}_confusion_matrix.txt")
         try:
             with open(cm_filename, "w") as f:
-                f.write(str(cm))
+                f.write("Confusion Matrix:\n")
+                f.write(tabulate(table_data, headers=table_header, tablefmt="grid"))
         except:
             print(f"Failed to write confusion matrix file for {model_name}")
+
 
         # Save the model to a file
         model_filename = os.path.join(save_dir, f"{model_name}.pkl")
@@ -163,12 +193,25 @@ def train_models_and_save_pca_data(eeg_data_pca, event_names, save_dir, random_s
             print(f"Failed to write report file for {model_name}")
 
         # Print and write the confusion matrix
+        # Get unique class labels from y_test
+        class_labels = np.unique(y_test)
+
+        # Convert class labels to strings 
+        class_labels = [str(label) for label in class_labels]
+
+        # Print and write the confusion matrix with class labels using tabulate
         cm = confusion_matrix(y_test, y_pred)
-        print(cm)
+        print("Confusion Matrix:")
+        table_data = [[label] + list(cm_row) for label, cm_row in zip(class_labels, cm)]
+        table_header = [""] + [f"Predicted {label}" for label in class_labels]
+        print(tabulate(table_data, headers=table_header, tablefmt="grid"))
+
+        # Write confusion matrix file for model_name
         cm_filename = os.path.join(save_dir, f"{model_name}_confusion_matrix.txt")
         try:
             with open(cm_filename, "w") as f:
-                f.write(str(cm))
+                f.write("Confusion Matrix:\n")
+                f.write(tabulate(table_data, headers=table_header, tablefmt="grid"))
         except:
             print(f"Failed to write confusion matrix file for {model_name}")
 

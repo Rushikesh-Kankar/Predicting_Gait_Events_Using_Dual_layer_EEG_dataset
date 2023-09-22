@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 
 def apply_pca_to_eeg_data(all_data):
@@ -15,7 +16,7 @@ def apply_pca_to_eeg_data(all_data):
     eeg_data = all_data.get_data()
 
     # The shape of eeg_data is (n_epochs, n_channels, n_times)
-    # We want to reshape it to (n_epochs, n_channels * n_times)
+    # reshape it to (n_epochs, n_channels * n_times)
     n_epochs, n_channels, n_times = eeg_data.shape
     eeg_data_reshaped = eeg_data.reshape((n_epochs, n_channels * n_times))
 
@@ -24,7 +25,7 @@ def apply_pca_to_eeg_data(all_data):
     eeg_data_standardized = scaler.fit_transform(eeg_data_reshaped)
 
     # Apply PCA and keep enough components to explain 95% of variance
-    pca = PCA(n_components=10)
+    pca = PCA(n_components=0.95)
     eeg_data_pca = pca.fit_transform(eeg_data_standardized)
 
     # Print the number of components
